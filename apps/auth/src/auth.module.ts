@@ -16,6 +16,7 @@ import { UsersModule } from './users/users.module';
         JWT_EXPIRATION_SECONDS: Joi.number().required(),
         JWT_SECRET: Joi.string().required(),
         MONGO_DB_URI: Joi.string().required(),
+        PORT: Joi.number().required(),
       }),
     }),
     JwtModule.registerAsync({
