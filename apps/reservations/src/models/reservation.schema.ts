@@ -12,9 +12,6 @@ export class ReservationDocument extends AbstractDocument {
   invoiceId: string;
 
   @Prop()
-  placeId: string;
-
-  @Prop()
   startDate: Date;
 
   @Prop()

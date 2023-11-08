@@ -1,4 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { PAYMENTS_SERVICE_NAME, UserDto } from '@app/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import { map } from 'rxjs';
 import { CreateReservationDto, UpdateReservationDto } from './dto';
 import { ReservationsRepository } from './reservations.repository';
 
@@ -6,14 +9,29 @@ import { ReservationsRepository } from './reservations.repository';
 export class ReservationsService {
   constructor(
     private readonly reservationsRepository: ReservationsRepository,
+    @Inject(PAYMENTS_SERVICE_NAME)
+    private readonly paymentsServiceProxy: ClientProxy,
   ) {}
 
-  create(createReservationDto: CreateReservationDto) {
-    return this.reservationsRepository.create({
-      ...createReservationDto,
-      timestamp: new Date(),
-      userId: '123',
-    });
+  async create(
+    createReservationDto: CreateReservationDto,
+    { email, _id: userId }: UserDto,
+  ) {
+    return this.paymentsServiceProxy
+      .send('create_charge', {
+        ...createReservationDto.charge,
+        email,
+      })
+      .pipe(
+        map((res) => {
+          return this.reservationsRepository.create({
+            ...createReservationDto,
+            invoiceId: res.id,
+            timestamp: new Date(),
+            userId,
+          });
+        }),
+      );
   }
 
   findAll() {

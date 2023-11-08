@@ -5,6 +5,7 @@ import { JwtModule } from '@nestjs/jwt';
 import * as Joi from 'joi';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { JwtStrategy, LocalStrategy } from './strategies';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -16,7 +17,8 @@ import { UsersModule } from './users/users.module';
         JWT_EXPIRATION_SECONDS: Joi.number().required(),
         JWT_SECRET: Joi.string().required(),
         MONGO_DB_URI: Joi.string().required(),
-        PORT: Joi.number().required(),
+        PORT_HTTP: Joi.number().required(),
+        PORT_TCP: Joi.number().required(),
       }),
     }),
     JwtModule.registerAsync({
@@ -31,6 +33,6 @@ import { UsersModule } from './users/users.module';
     LoggerModule,
     UsersModule,
   ],
-  providers: [AuthService],
+  providers: [AuthService, JwtStrategy, LocalStrategy],
 })
 export class AuthModule {}
