@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: auth
+  name: auth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth
+  template:
+    metadata:
+      labels:
+        app: auth
+    spec:
+      containers:
+        - image: us-east4-docker.pkg.dev/sleepr-404504/auth/production
+          name: auth
+          env:
+            - name: JWT_EXPIRATION_SECONDS
+              value: '3600'
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: jwt
+                  key: secret
+            - name: MONGO_DB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb
+                  key: connectionString
+            - name: PORT_HTTP
+              value: '3003'
+            - name: PORT_TCP
+              value: '3002'
+          ports:
+            - containerPort: 3002
+            - containerPort: 3003

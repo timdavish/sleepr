@@ -1,6 +1,7 @@
 import {
   AUTH_SERVICE_NAME,
   DatabaseModule,
+  HealthModule,
   LoggerModule,
   PAYMENTS_SERVICE_NAME,
 } from '@app/common';
@@ -58,6 +59,7 @@ import { ReservationsService } from './reservations.service';
         schema: ReservationSchema,
       },
     ]),
+    HealthModule,
     LoggerModule,
   ],
   providers: [ReservationsRepository, ReservationsService],
