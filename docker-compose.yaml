@@ -1,4 +1,8 @@
+name: sleepr
 services:
+  mongo:
+    image: mongo
+
   auth:
     build:
       context: .
@@ -46,6 +50,3 @@ services:
       - '3000:3000'
     volumes:
       - .:/usr/src/app
-
-  mongo:
-    image: mongo

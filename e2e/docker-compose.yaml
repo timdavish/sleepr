@@ -1,0 +1,40 @@
+name: sleepr-e2e
+services:
+  e2e:
+    build:
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./specs:/usr/src/app/specs
+    depends_on:
+      - mongo
+      - auth
+      - notifications
+      - payments
+      - reservations
+
+  mongo:
+    image: mongo
+
+  auth:
+    image: us-east4-docker.pkg.dev/sleepr-404504/auth/production
+    env_file:
+      - ../apps/auth/.env
+    ports:
+      - '3001:3001'
+
+  notifications:
+    image: us-east4-docker.pkg.dev/sleepr-404504/notifications/production
+    env_file:
+      - ../apps/notifications/.env
+
+  payments:
+    image: us-east4-docker.pkg.dev/sleepr-404504/payments/production
+    env_file:
+      - ../apps/payments/.env
+
+  reservations:
+    image: us-east4-docker.pkg.dev/sleepr-404504/reservations/production
+    env_file:
+      - ../apps/reservations/.env
+    ports:
+      - '3000:3000'
