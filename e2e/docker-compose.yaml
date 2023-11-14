@@ -26,11 +26,15 @@ services:
     image: us-east4-docker.pkg.dev/sleepr-404504/notifications/production
     env_file:
       - ../apps/notifications/.env
+    ports:
+      - '3004:3004'
 
   payments:
     image: us-east4-docker.pkg.dev/sleepr-404504/payments/production
     env_file:
       - ../apps/payments/.env
+    ports:
+      - '3003:3003'
 
   reservations:
     image: us-east4-docker.pkg.dev/sleepr-404504/reservations/production
