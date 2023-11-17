@@ -9,7 +9,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import * as Joi from 'joi';
-import { ReservationDocument, ReservationSchema } from './models';
+import { Reservation } from './models';
 import { ReservationsController } from './reservations.controller';
 import { ReservationsRepository } from './reservations.repository';
 import { ReservationsService } from './reservations.service';
@@ -46,19 +46,13 @@ import { ReservationsService } from './reservations.service';
       validationSchema: Joi.object({
         AUTH_HOST: Joi.string().required(),
         AUTH_PORT_TCP: Joi.number().required(),
-        MONGO_DB_URI: Joi.string().required(),
         PAYMENTS_HOST: Joi.string().required(),
         PAYMENTS_PORT_TCP: Joi.number().required(),
         PORT_HTTP: Joi.number().required(),
       }),
     }),
     DatabaseModule,
-    DatabaseModule.forFeature([
-      {
-        name: ReservationDocument.name,
-        schema: ReservationSchema,
-      },
-    ]),
+    DatabaseModule.forFeature([Reservation]),
     HealthModule,
     LoggerModule,
   ],

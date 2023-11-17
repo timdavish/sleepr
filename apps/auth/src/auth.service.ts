@@ -1,4 +1,4 @@
-import { UserDocument } from '@app/common';
+import { User } from '@app/common';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -12,9 +12,9 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async login(user: UserDocument, res: Response) {
+  async login(user: User, res: Response) {
     const tokenPayload: TokenPayload = {
-      userId: user._id.toHexString(),
+      userId: user.id,
     };
 
     const expiresAt = new Date();

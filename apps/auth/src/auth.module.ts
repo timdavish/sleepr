@@ -16,7 +16,6 @@ import { UsersModule } from './users/users.module';
       validationSchema: Joi.object({
         JWT_EXPIRATION_SECONDS: Joi.number().required(),
         JWT_SECRET: Joi.string().required(),
-        MONGO_DB_URI: Joi.string().required(),
         PORT_HTTP: Joi.number().required(),
         PORT_TCP: Joi.number().required(),
       }),
