@@ -23,10 +23,10 @@ import { ReservationsService } from './reservations.service';
         name: AUTH_SERVICE_NAME,
         useFactory: (configService: ConfigService) => ({
           options: {
-            host: configService.get('AUTH_HOST'),
-            port: configService.get('AUTH_PORT_TCP'),
+            queue: AUTH_SERVICE_NAME,
+            urls: [configService.getOrThrow<string>('RABBITMQ_URI')],
           },
-          transport: Transport.TCP,
+          transport: Transport.RMQ,
         }),
       },
       {
@@ -34,10 +34,10 @@ import { ReservationsService } from './reservations.service';
         name: PAYMENTS_SERVICE_NAME,
         useFactory: (configService: ConfigService) => ({
           options: {
-            host: configService.get('PAYMENTS_HOST'),
-            port: configService.get('PAYMENTS_PORT_TCP'),
+            queue: PAYMENTS_SERVICE_NAME,
+            urls: [configService.getOrThrow<string>('RABBITMQ_URI')],
           },
-          transport: Transport.TCP,
+          transport: Transport.RMQ,
         }),
       },
     ]),
@@ -46,9 +46,16 @@ import { ReservationsService } from './reservations.service';
       validationSchema: Joi.object({
         AUTH_HOST: Joi.string().required(),
         AUTH_PORT_TCP: Joi.number().required(),
+        MYSQL_DATABASE: Joi.string().required(),
+        MYSQL_HOST: Joi.string().required(),
+        MYSQL_PASSWORD: Joi.string().required(),
+        MYSQL_PORT: Joi.number().required(),
+        MYSQL_SYNCHRONIZE: Joi.boolean().required(),
+        MYSQL_USERNAME: Joi.string().required(),
         PAYMENTS_HOST: Joi.string().required(),
         PAYMENTS_PORT_TCP: Joi.number().required(),
         PORT_HTTP: Joi.number().required(),
+        RABBITMQ_URI: Joi.string().required(),
       }),
     }),
     DatabaseModule,

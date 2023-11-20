@@ -15,10 +15,10 @@ import { PaymentsService } from './payments.service';
         name: NOTIFICATIONS_SERVICE_NAME,
         useFactory: (configService: ConfigService) => ({
           options: {
-            host: configService.get('NOTIFICATIONS_HOST'),
-            port: configService.get('NOTIFICATIONS_PORT_TCP'),
+            queue: NOTIFICATIONS_SERVICE_NAME,
+            urls: [configService.getOrThrow<string>('RABBITMQ_URI')],
           },
-          transport: Transport.TCP,
+          transport: Transport.RMQ,
         }),
       },
     ]),
@@ -27,7 +27,7 @@ import { PaymentsService } from './payments.service';
       validationSchema: Joi.object({
         NOTIFICATIONS_HOST: Joi.string().required(),
         NOTIFICATIONS_PORT_TCP: Joi.number().required(),
-        PORT_TCP: Joi.number().required(),
+        RABBITMQ_URI: Joi.string().required(),
         STRIPE_SECRET_KEY: Joi.string().required(),
       }),
     }),

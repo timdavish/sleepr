@@ -1,3 +1,4 @@
+import { PAYMENTS_SERVICE_NAME } from '@app/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { Transport } from '@nestjs/microservices';
@@ -11,10 +12,11 @@ async function bootstrap() {
 
   app.connectMicroservice({
     options: {
-      host: '0.0.0.0',
-      port: configService.get('PORT_TCP'),
+      noAck: false,
+      queue: PAYMENTS_SERVICE_NAME,
+      urls: [configService.getOrThrow('RABBITMQ_URI')],
     },
-    transport: Transport.TCP,
+    transport: Transport.RMQ,
   });
 
   app.useLogger(app.get(Logger));

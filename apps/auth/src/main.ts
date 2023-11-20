@@ -1,3 +1,4 @@
+import { AUTH_SERVICE_NAME } from '@app/common';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
@@ -13,10 +14,10 @@ async function bootstrap() {
 
   app.connectMicroservice({
     options: {
-      host: '0.0.0.0',
-      port: configService.get('PORT_TCP'),
+      queue: AUTH_SERVICE_NAME,
+      urls: [configService.getOrThrow('RABBITMQ_URI')],
     },
-    transport: Transport.TCP,
+    transport: Transport.RMQ,
   });
 
   app.use(cookieParser());
@@ -28,7 +29,7 @@ async function bootstrap() {
   app.useLogger(app.get(Logger));
 
   await app.startAllMicroservices();
-  await app.listen(configService.get('PORT_HTTP'));
+  await app.listen(configService.getOrThrow('PORT_HTTP'));
 }
 
 bootstrap();

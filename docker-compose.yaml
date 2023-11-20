@@ -1,5 +1,6 @@
 name: sleepr
 services:
+  # External
   mysql:
     image: mysql
     env_file:
@@ -7,6 +8,12 @@ services:
     ports:
       - '3306:3306'
 
+  rabbitmq:
+    image: rabbitmq
+    ports:
+      - 5672:5672
+
+  # Internal
   auth:
     build:
       context: .

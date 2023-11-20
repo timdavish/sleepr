@@ -16,16 +16,22 @@ import { UsersModule } from './users/users.module';
       validationSchema: Joi.object({
         JWT_EXPIRATION_SECONDS: Joi.number().required(),
         JWT_SECRET: Joi.string().required(),
+        MYSQL_DATABASE: Joi.string().required(),
+        MYSQL_HOST: Joi.string().required(),
+        MYSQL_PASSWORD: Joi.string().required(),
+        MYSQL_PORT: Joi.number().required(),
+        MYSQL_SYNCHRONIZE: Joi.boolean().required(),
+        MYSQL_USERNAME: Joi.string().required(),
         PORT_HTTP: Joi.number().required(),
-        PORT_TCP: Joi.number().required(),
+        RABBITMQ_URI: Joi.string().required(),
       }),
     }),
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        secret: configService.get('JWT_SECRET'),
+        secret: configService.getOrThrow('JWT_SECRET'),
         signOptions: {
-          expiresIn: `${configService.get('JWT_EXPIRATION_SECONDS')}s`,
+          expiresIn: `${configService.getOrThrow('JWT_EXPIRATION_SECONDS')}s`,
         },
       }),
     }),
