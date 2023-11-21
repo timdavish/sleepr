@@ -11,7 +11,21 @@ services:
   rabbitmq:
     image: rabbitmq
     ports:
-      - 5672:5672
+      - '5672:5672'
+
+  # Gateway
+  gateway:
+    build:
+      context: .
+      dockerfile: ./apps/gateway/Dockerfile
+      target: development
+    command: pnpm run start:dev gateway
+    env_file:
+      - ./apps/gateway/.env
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/usr/src/app
 
   # Internal
   auth:
@@ -35,6 +49,8 @@ services:
     command: pnpm run start:dev notifications
     env_file:
       - ./apps/notifications/.env
+    ports:
+      - '3002:3002'
     volumes:
       - .:/usr/src/app
 
@@ -46,6 +62,8 @@ services:
     command: pnpm run start:dev payments
     env_file:
       - ./apps/payments/.env
+    ports:
+      - '3003:3003'
     volumes:
       - .:/usr/src/app
 
@@ -58,6 +76,6 @@ services:
     env_file:
       - ./apps/reservations/.env
     ports:
-      - '3000:3000'
+      - '3004:3004'
     volumes:
       - .:/usr/src/app

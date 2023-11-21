@@ -1,6 +1,11 @@
 import { HealthModule, LoggerModule } from '@app/common';
+import {
+  ApolloFederationDriver,
+  ApolloFederationDriverConfig,
+} from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { GraphQLModule } from '@nestjs/graphql';
 import { JwtModule } from '@nestjs/jwt';
 import * as Joi from 'joi';
 import { AuthController } from './auth.controller';
@@ -25,6 +30,12 @@ import { UsersModule } from './users/users.module';
         PORT_HTTP: Joi.number().required(),
         RABBITMQ_URI: Joi.string().required(),
       }),
+    }),
+    GraphQLModule.forRoot<ApolloFederationDriverConfig>({
+      autoSchemaFile: {
+        federation: 2,
+      },
+      driver: ApolloFederationDriver,
     }),
     JwtModule.registerAsync({
       inject: [ConfigService],

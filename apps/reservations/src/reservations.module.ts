@@ -5,13 +5,19 @@ import {
   LoggerModule,
   PAYMENTS_SERVICE_NAME,
 } from '@app/common';
+import {
+  ApolloFederationDriver,
+  ApolloFederationDriverConfig,
+} from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { GraphQLModule } from '@nestjs/graphql';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import * as Joi from 'joi';
 import { Reservation } from './models';
 import { ReservationsController } from './reservations.controller';
 import { ReservationsRepository } from './reservations.repository';
+import { ReservationsResolver } from './reservations.resolver';
 import { ReservationsService } from './reservations.service';
 
 @Module({
@@ -44,25 +50,31 @@ import { ReservationsService } from './reservations.service';
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
-        AUTH_HOST: Joi.string().required(),
-        AUTH_PORT_TCP: Joi.number().required(),
         MYSQL_DATABASE: Joi.string().required(),
         MYSQL_HOST: Joi.string().required(),
         MYSQL_PASSWORD: Joi.string().required(),
         MYSQL_PORT: Joi.number().required(),
         MYSQL_SYNCHRONIZE: Joi.boolean().required(),
         MYSQL_USERNAME: Joi.string().required(),
-        PAYMENTS_HOST: Joi.string().required(),
-        PAYMENTS_PORT_TCP: Joi.number().required(),
         PORT_HTTP: Joi.number().required(),
         RABBITMQ_URI: Joi.string().required(),
       }),
     }),
     DatabaseModule,
     DatabaseModule.forFeature([Reservation]),
+    GraphQLModule.forRoot<ApolloFederationDriverConfig>({
+      autoSchemaFile: {
+        federation: 2,
+      },
+      driver: ApolloFederationDriver,
+    }),
     HealthModule,
     LoggerModule,
   ],
-  providers: [ReservationsRepository, ReservationsService],
+  providers: [
+    ReservationsRepository,
+    ReservationsResolver,
+    ReservationsService,
+  ],
 })
 export class ReservationsModule {}

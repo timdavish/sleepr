@@ -46,6 +46,10 @@ export class UsersService {
     return user;
   }
 
+  async findAll() {
+    return this.usersRepository.find({}, { roles: true });
+  }
+
   async findOne(findOneUserDto: FindOneUserDto) {
     return this.usersRepository.findOne(findOneUserDto, { roles: true });
   }

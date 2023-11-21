@@ -19,11 +19,13 @@ export class NotificationsService {
   constructor(private readonly configService: ConfigService) {}
 
   async notifyEmail({ email, subject, text }: NotifyEmailDto) {
-    await this.transporter.sendMail({
+    const res = await this.transporter.sendMail({
       from: this.configService.getOrThrow('SMTP_USER'),
       subject,
       text,
       to: email,
     });
+
+    return { id: res.messageId };
   }
 }

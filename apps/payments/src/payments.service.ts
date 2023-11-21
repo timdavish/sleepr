@@ -40,4 +40,10 @@ export class PaymentsService {
 
     return paymentIntent;
   }
+
+  async findAll() {
+    const payments = await this.stripe.paymentIntents.list();
+
+    return payments.data;
+  }
 }
